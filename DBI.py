@@ -38,7 +38,7 @@ def sql2df(query=None, schema=None, table=None, con):
     import psycopg2 as pg
     import DBI
 
-    con  = pg.connect(database="udngpdb", user="gpdbcrmuseronly", password="Welcome1", host="10.206.102.150", port="5432")
+    con  = pg.connect(database, user, password, host, port)
 
     DBI.sql2df(query='', schema='dad', table='test', con=con)
 
@@ -80,7 +80,7 @@ def df2sql(data=None, schema=None, table=None, con=None, if_exists='fail'):
     import psycopg2 as pg
     import DBI
 
-    con  = pg.connect(database="udngpdb", user="gpdbcrmuseronly", password="Welcome1", host="10.206.102.150", port="5432")
+    con  = pg.connect(database, user, password, host, port)
     data = pd.read_csv('file_path')
 
     DBI.df2sql(data=data, schema='dad', table='test', con=con, if_exists='append')
@@ -116,7 +116,7 @@ class DBInsert():
     -----------------------
     import psycopg2 as pg
 
-    con = pg.connect(database="udngpdb", user="gpdbcrmuseronly", password="Welcome1", host="10.206.102.150", port="5432")
+    con = pg.connect(database, user, password, host, port)
     db  = DBInsert(schema='dad', table='test', con=con)
 
     """
@@ -220,7 +220,7 @@ class DBInsert():
         -----------------------
         import psycopg2 as pg
 
-        con = pg.connect(database="udngpdb", user="gpdbcrmuseronly", password="Welcome1", host="10.206.102.150", port="5432")
+        con = pg.connect(database, user, password, host, port)
         db  = DBI(schema='dad', table='test', con=con)
 
         data = pd.DataFrame(dict)
@@ -255,7 +255,7 @@ class DBInsert():
         -----------------------
         import psycopg2 as pg
 
-        con = pg.connect(database="udngpdb", user="gpdbcrmuseronly", password="Welcome1", host="10.206.102.150", port="5432")
+        con = pg.connect(database, user, password, host, port)
         db  = DBI(schema='dad', table='test', con=con)
 
         data = db.read_sql()
