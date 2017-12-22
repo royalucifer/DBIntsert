@@ -49,7 +49,7 @@ def sql2df(query=None, schema=None, table=None, con):
     elif query != None or (query != None and table != None):
         raise ValueError("You must choose one way to query PostgreSQL, SQL script or table name.")
 
-    db = DBInsert(schema=schema, table=table, con=con)
+    db = DB(schema=schema, table=table, con=con)
     data = db.read_sql(query=query)
 
     return(data)
@@ -95,10 +95,10 @@ def df2sql(data=None, schema=None, table=None, con=None, if_exists='fail'):
         # data.__class__.__name__ != 'DataFrame'
         raise ValueError("There is no data to insert into the table in PostgreSQL.")
 
-    db = DBInsert(schema=schema, table=table, con=con)
+    db = DB(schema=schema, table=table, con=con)
     db.to_sql(df=data, if_exists=if_exists)
 
-class DBInsert():
+class DB():
     """
 
     Write recores stored in a Pandas.DataFrame to a SQL database in a fast way.
@@ -117,7 +117,7 @@ class DBInsert():
     import psycopg2 as pg
 
     con = pg.connect(database, user, password, host, port)
-    db  = DBInsert(schema='dad', table='test', con=con)
+    db  = DB(schema='dad', table='test', con=con)
 
     """
     def __init__(self, schema=None, table=None, con=None):
@@ -221,7 +221,7 @@ class DBInsert():
         import psycopg2 as pg
 
         con = pg.connect(database, user, password, host, port)
-        db  = DBI(schema='dad', table='test', con=con)
+        db  = DB(schema='dad', table='test', con=con)
 
         data = pd.DataFrame(dict)
         db.to_sql(df=data, if_exists='append')
@@ -256,7 +256,7 @@ class DBInsert():
         import psycopg2 as pg
 
         con = pg.connect(database, user, password, host, port)
-        db  = DBI(schema='dad', table='test', con=con)
+        db  = DB(schema='dad', table='test', con=con)
 
         data = db.read_sql()
 
