@@ -17,7 +17,7 @@ types = {
     'VARCHAR':  'TEXT'
 }
 
-def sql2df(query=None, schema=None, table=None, con):
+def sql2df(query=None, schema=None, table=None, con=None):
     """
     
     The API of class 'DBInsert'.
@@ -38,16 +38,19 @@ def sql2df(query=None, schema=None, table=None, con):
     import psycopg2 as pg
     import DBI
 
-    con  = pg.connect(database, user, password, host, port)
+    con  = pg.connect(database="udngpdb", user="gpdbcrmuseronly", password="Welcome1", host="10.206.102.150", port="5432")
 
     DBI.sql2df(query='', schema='dad', table='test', con=con)
 
     """
     # check parameters have right values
-    if query == None or (query == None or table == None):
+    if query == None and (schema == None or table == None):
         raise ValueError("You must give the values of 'query', or 'schema' and 'table'.")
-    elif query != None or (query != None and table != None):
+    elif query != None and (schema != None and table != None):
         raise ValueError("You must choose one way to query PostgreSQL, SQL script or table name.")
+    
+    if con == None:
+        raise ValueError("There is no connection to connect with PostgreSQL.")
 
     db = DB(schema=schema, table=table, con=con)
     data = db.read_sql(query=query)
@@ -80,7 +83,7 @@ def df2sql(data=None, schema=None, table=None, con=None, if_exists='fail'):
     import psycopg2 as pg
     import DBI
 
-    con  = pg.connect(database, user, password, host, port)
+    con  = pg.connect(database="udngpdb", user="gpdbcrmuseronly", password="Welcome1", host="10.206.102.150", port="5432")
     data = pd.read_csv('file_path')
 
     DBI.df2sql(data=data, schema='dad', table='test', con=con, if_exists='append')
@@ -116,7 +119,7 @@ class DB():
     -----------------------
     import psycopg2 as pg
 
-    con = pg.connect(database, user, password, host, port)
+    con = pg.connect(database="udngpdb", user="gpdbcrmuseronly", password="Welcome1", host="10.206.102.150", port="5432")
     db  = DB(schema='dad', table='test', con=con)
 
     """
@@ -164,7 +167,7 @@ class DB():
             CREATE TABLE {name} (
                 {columns}
             );
-        '''    
+        ''' 
         create = template_create.format(name=self.tb_name, columns=columns)
 
         return create
@@ -220,7 +223,7 @@ class DB():
         -----------------------
         import psycopg2 as pg
 
-        con = pg.connect(database, user, password, host, port)
+        con = pg.connect(database="udngpdb", user="gpdbcrmuseronly", password="Welcome1", host="10.206.102.150", port="5432")
         db  = DB(schema='dad', table='test', con=con)
 
         data = pd.DataFrame(dict)
@@ -255,7 +258,7 @@ class DB():
         -----------------------
         import psycopg2 as pg
 
-        con = pg.connect(database, user, password, host, port)
+        con = pg.connect(database="udngpdb", user="gpdbcrmuseronly", password="Welcome1", host="10.206.102.150", port="5432")
         db  = DB(schema='dad', table='test', con=con)
 
         data = db.read_sql()
