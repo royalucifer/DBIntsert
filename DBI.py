@@ -94,7 +94,7 @@ def df2sql(data=None, schema=None, table=None, con=None, if_exists='fail'):
         raise ValueError("There are no values in 'schema' and 'table'.")
     if con == None:
         raise ValueError("There is no connection to connect with PostgreSQL.")
-    if data == None or not isinstance(data, pd.DataFrame):
+    if not isinstance(data, pd.DataFrame):
         # data.__class__.__name__ != 'DataFrame'
         raise ValueError("There is no data to insert into the table in PostgreSQL.")
 
