@@ -38,7 +38,7 @@ def sql2df(query=None, schema=None, table=None, con=None):
     import psycopg2 as pg
     import DBI
 
-    con  = pg.connect(database, user, password, host, port)
+    con  = pg.connect(database="udngpdb", user="gpdbcrmuseronly", password="Welcome1", host="10.206.102.150", port="5432")
 
     DBI.sql2df(query='', schema='dad', table='test', con=con)
 
@@ -58,7 +58,7 @@ def sql2df(query=None, schema=None, table=None, con=None):
     return(data)
          
 
-def df2sql(data=None, schema=None, table=None, con=None, if_exists='fail'):
+def df2sql(data=None, schema=None, table=None, con=None, if_exists='fail', index=False):
     """
     
     The API of class 'DBInsert'.
@@ -77,16 +77,18 @@ def df2sql(data=None, schema=None, table=None, con=None, if_exists='fail'):
         - fail:    If table exists, do nothing.
         - replace: If table exists, drop it, recreate it, and insert data. Create if does not exist.
         - append:  If table exists, insert data. Create if does not exist.
+    index : Boolean
+        whether to insert the index into table
     
     Examples
     -----------------------
     import psycopg2 as pg
     import DBI
 
-    con  = pg.connect(database, user, password, host, port)
+    con  = pg.connect(database="udngpdb", user="gpdbcrmuseronly", password="Welcome1", host="10.206.102.150", port="5432")
     data = pd.read_csv('file_path')
 
-    DBI.df2sql(data=data, schema='dad', table='test', con=con, if_exists='append')
+    DBI.df2sql(data=data, schema='dad', table='test', con=con, if_exists='append', index=True)
 
     """
     # check parameters have right values
@@ -99,7 +101,7 @@ def df2sql(data=None, schema=None, table=None, con=None, if_exists='fail'):
         raise ValueError("There is no data to insert into the table in PostgreSQL.")
 
     db = DB(schema=schema, table=table, con=con)
-    db.to_sql(df=data, if_exists=if_exists)
+    db.to_sql(df=data, if_exists=if_exists, index=index)
 
 class DB():
     """
@@ -119,7 +121,7 @@ class DB():
     -----------------------
     import psycopg2 as pg
 
-    con = pg.connect(database, user, password, host, port)
+    con = pg.connect(database="udngpdb", user="gpdbcrmuseronly", password="Welcome1", host="10.206.102.150", port="5432")
     db  = DB(schema='dad', table='test', con=con)
 
     """
@@ -131,7 +133,7 @@ class DB():
 
         self.con = con
         self.tb_name = '{schema}."{table}"'.format(schema=schema, table=table)
-
+    
     def execute(self, sql, params={}):
         with self.con.cursor() as cur:
             cur.execute(sql, params)
@@ -207,7 +209,7 @@ class DB():
 
         return
 
-    def to_sql(self, df, if_exists='fail'):
+    def to_sql(self, df, if_exists='fail', index=False):
         """
         
         Parameters
@@ -218,18 +220,23 @@ class DB():
             - fail:    If table exists, do nothing.
             - replace: If table exists, drop it, recreate it, and insert data. Create if does not exist.
             - append:  If table exists, insert data. Create if does not exist.
+        index : Boolean
+            whether to insert the index into table
 
         Examples
         -----------------------
         import psycopg2 as pg
 
-        con = pg.connect(database, user, password, host, port)
+        con = pg.connect(database="udngpdb", user="gpdbcrmuseronly", password="Welcome1", host="10.206.102.150", port="5432")
         db  = DB(schema='dad', table='test', con=con)
 
         data = pd.DataFrame(dict)
-        db.to_sql(df=data, if_exists='append')
+        db.to_sql(df=data, if_exists='append', index=True)
 
         """
+        if index:
+            df.reset_index(level=0, inplace=True)
+
         # drop table
         if if_exists=='replace' and self._table_exist():
             sql = '''DROP TABLE {name}'''.format(name=self.tb_name)
@@ -258,7 +265,7 @@ class DB():
         -----------------------
         import psycopg2 as pg
 
-        con = pg.connect(database, user, password, host, port)
+        con = pg.connect(database="udngpdb", user="gpdbcrmuseronly", password="Welcome1", host="10.206.102.150", port="5432")
         db  = DB(schema='dad', table='test', con=con)
 
         data = db.read_sql()
